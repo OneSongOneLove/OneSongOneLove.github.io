@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang=en><head><meta charset=UTF-8><title>Title</title><style>
+        canvas {
+            border: 1px solid #000000;
+            background: url("images/road.png");
+        }
+    </style></head><body><canvas width=0 height=600 id=cas></canvas><script>
+    var cas = document.getElementById("cas");
+    var ctx = cas.getContext("2d");
+
+    cas.width = document.body.offsetWidth;
+
+    var img = new Image();
+
+    img.src = "images/士兵.png";
+
+    img.onload = function(){
+        // 士兵的大小
+        var w = img.width/4;
+        var h = img.height/4;
+        // 记录是这一行的第几个动作
+        var ix = 0;
+        // 记录是第几行的动作
+        var iy = 1;
+        // 这个值用来操作往返
+        var mark = 1;
+        // 士兵的活动范围
+        var xb = cas.width;
+        setInterval(function(){
+            var x = ix * w;
+            var y = iy * h;
+            // 清除画布
+            cas.width = cas.width;
+            ctx.drawImage(img,x,y,w,h,xb-=10*mark,100,w,h);
+            // 判断切换士兵的动作
+            ix = ix == 3 ? 0 : ++ix;
+            // 判断士兵碰到活动范围的边界，碰到，转向（切换行数和动作），并返回
+            if(xb <= -w || xb >= cas.width){
+                mark*= -1;
+                iy = mark == 1 ? 1 : 2;
+            }
+        },50);
+    }
+</script></body></html>

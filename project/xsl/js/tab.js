@@ -1,0 +1,1 @@
+$(".bottom_bar ul li").on("click",function(){var e=$(this).index();$(".sidebar_content > div").eq(e).addClass("selected").siblings().removeClass("selected")});

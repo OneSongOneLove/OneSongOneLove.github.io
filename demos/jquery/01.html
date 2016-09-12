@@ -1,0 +1,46 @@
+<!DOCTYPE html><html><head lang=en><meta charset=UTF-8><title></title><style type=text/css>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        .parentWrap {
+            width: 200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .menuGroup {
+            border: 1px solid #999;
+            background-color: #e0ecff;
+        }
+
+        .groupTitle {
+            display: block;
+            height: 20px;
+            line-height: 20px;
+            font-size: 16px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .menuGroup > div {
+            height: 200px;
+            background-color: #fff;
+            display: none;
+        }
+
+    </style><script src=js/jquery-1.7.1.js></script><script>
+
+        $(document).ready(function () {
+            //找到标题注册事件
+            $(".groupTitle").click(function () {
+                //点击标题，让标题对应的盒子显示，其他的隐藏
+                $(this).next().show().parent().siblings().children("div").hide();
+            })
+        });
+    </script></head><body><ul class=parentWrap><li class=menuGroup><span class=groupTitle>美女1</span><div><img src=images/01.jpg></div></li><li class=menuGroup><span class=groupTitle>美女2</span><div><img src=images/02.jpg></div></li><li class=menuGroup><span class=groupTitle>美女3</span><div><img src=images/03.jpg></div></li><li class=menuGroup><span class=groupTitle>美女4</span><div><img src=images/04.jpg></div></li></ul></body></html>

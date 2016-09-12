@@ -1,0 +1,49 @@
+<!DOCTYPE html><html><head lang=en><meta charset=UTF-8><title></title><style type=text/css>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        body {
+            background: #000;
+        }
+
+        .wrap {
+            margin: 100px auto 0;
+            width: 630px;
+            height: 394px;
+            padding: 10px 0 0 10px;
+            background: #000;
+            overflow: hidden;
+            border: 1px solid #fff;
+        }
+
+        .wrap li {
+            float: left;
+            margin: 0 10px 10px 0;
+
+        }
+
+        .wrap img {
+            display: block;
+            border: 0;
+        }
+    </style><script src=js/jquery-1.7.1.js></script><script>
+        $(document).ready(function () {
+            //1. 找到li,注册mouseenter事件
+            $(".wrap>ul>li").mouseenter(function () {
+                //2. 让当前元素高亮，并且让其他兄弟变暗（排他）
+                $(this).css("opacity",1).siblings().css("opacity", 0.4);
+            });
+
+            //3. 离开整个盒子的时候，让所有的li高亮
+            $(".wrap").mouseleave(function () {
+                //$(".wrap li")
+                $(this).find("li").css("opacity", 1);
+            });
+        });
+    </script></head><body><div class=wrap><ul><li><a href=#><img src=images/01.jpg></a></li><li><a href=#><img src=images/02.jpg></a></li><li><a href=#><img src=images/03.jpg></a></li><li><a href=#><img src=images/04.jpg></a></li><li><a href=#><img src=images/05.jpg></a></li><li><a href=#><img src=images/06.jpg></a></li></ul></div></body></html>

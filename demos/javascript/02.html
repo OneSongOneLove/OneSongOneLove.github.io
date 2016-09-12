@@ -1,0 +1,224 @@
+<!DOCTYPE html><html lang=en><head><meta charset=UTF-8><title>Title</title><style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        body, button, input, select, textarea {
+            font: 12px/1.5 "Microsoft YaHei", "微软雅黑", SimSun, "宋体", sans-serif;
+            color: #666;
+        }
+
+        ol, ul {
+            list-style: none
+        }
+
+        a {
+            text-decoration: none
+        }
+
+        fieldset, img {
+            border: 0;
+            vertical-align: top;
+        }
+
+        a, input, button, select, textarea {
+            outline: none;
+        }
+
+        a, button {
+            cursor: pointer;
+        }
+
+        .wrap {
+            width: 1200px;
+            margin: 10px auto;
+        }
+
+        .slide {
+            height: 500px;
+            position: relative;
+        }
+
+        .slide li {
+            position: absolute;
+            left: 200px;
+            top: 0;
+        }
+
+        .slide li img {
+            width: 100%;
+        }
+
+        .arrow {
+            opacity: 0;
+        }
+
+        .prev, .next {
+            width: 76px;
+            height: 112px;
+            position: absolute;
+            top: 50%;
+            margin-top: -56px;
+            background: url("images/prev.png") no-repeat;
+            z-index: 99;
+        }
+
+        .next {
+            right: 0;
+            background: url("images/next.png");
+        }
+    </style></head><body><div class=wrap id=wrap><div class=slide id=slide><ul><li><a href=#><img src=images/z5.jpg></a></li><li><a href=#><img src=images/z6.jpg></a></li><li><a href=#><img src=images/z7.jpg></a></li><li><a href=#><img src=images/z8.jpg></a></li><li><a href=#><img src=images/z9.jpg></a></li></ul><div class=arrow id=arrow><a href=javascript:; class=prev></a> <a href=javascript:; class=next></a></div></div></div><script>
+    //记录每一张图片的 位置 大小  透明度 层级
+    var datas = [
+        {   //  1
+            width: 400,
+            top: 70,
+            left: 50,
+            opacity: 0.2,
+            zIndex: 2
+        },
+        {  // 2
+            width: 600,
+            top: 120,
+            left: 0,
+            opacity: 0.8,
+            zIndex: 3
+        },
+        {   // 3
+            width: 800,
+            top: 100,
+            left: 200,
+            opacity: 1,
+            zIndex: 4
+        },
+        {  // 4
+            width: 600,
+            top: 120,
+            left: 600,
+            opacity: 0.8,
+            zIndex: 3
+        },
+        {   //5
+            width: 400,
+            top: 70,
+            left: 750,
+            opacity: 0.2,
+            zIndex: 2
+        }
+    ];
+
+    //找到所需要的元素
+    var wrap = document.getElementById("wrap");
+    var slide = document.getElementById("slide");
+    var ul = slide.children[0];
+    var arrow = slide.children[1];
+    var prev = arrow.children[0];
+    var next = arrow.children[1];
+
+
+    move();
+    function move() {
+        for (var i = 0; i < ul.children.length; i++) {
+            var li = ul.children[i];
+            var data = datas[i];
+            console.log(data);
+            animate(li, data);
+        }
+    }
+
+
+    //鼠标悬停时显示左右键，离开时，隐藏左右键
+    wrap.onmouseover = function () {
+        animate(arrow, {"opacity": 1})
+    }
+    wrap.onmouseout = function () {
+        animate(arrow, {"opacity": 0})
+    }
+
+
+    //下一张
+    next.onclick = function () {
+        //把datas中的最后一项放到第一项
+        var last = datas.pop();
+        datas.unshift(last);
+        move();
+    }
+
+    //上一张
+    prev.onclick = function () {
+        //把datas中的第一项放到最后一张
+        var frist = datas.shift();
+        datas.push(frist);
+        move();
+    }
+
+
+
+    function animate(element, attrs,fn) {
+        //清除定时器
+        if(element.timerId) {
+            clearInterval(element.timerId);
+        }
+        element.timerId = setInterval(function () {
+            //假设定时器应该停止了
+            var stop = true;
+            //遍历attrs对象，获取所有属性
+            for(var k in attrs) {
+                //获取样式属性 对应的目标值
+                var target = attrs[k];
+                var current = 0;
+                var step = 0;
+                //判断是否是要修改透明度的属性
+                if(k === "opacity") {
+                    current = parseFloat( getStyle(element, k)) * 100 || 0;
+                    target = target * 100;
+                    step = (target - current) / 10;
+                    step = step > 0 ? Math.ceil(step) : Math.floor(step);
+                    current += step;
+                    element.style[k] = current / 100;
+                    //兼容ie
+                    element.style["filter"] = "alpha(opacity="+  current +")";
+                }else if(k === "zIndex") {
+                    element.style[k] = target;
+                } else {
+                    //在上午的代码的基础上修改
+                    //获取任意样式属性的值，如果转换数字失败，返回为0
+                    current = parseInt(getStyle(element, k)) || 0;
+                    step = (target - current) / 10;
+                    //console.log("current:" + current + "  step:" + step);
+                    step = step > 0 ? Math.ceil(step) : Math.floor(step);
+                    current += step;
+                    //在上午的代码的基础上修改
+                    //设置任意样式属性的值
+                    element.style[k] = current + "px";
+                }
+                if(step !== 0) {
+                    //如果有一个属性的值没有到达target  ，设置为false
+                    stop = false;
+                }
+
+            }
+            //如果所有属性值都到达target  停止定时器
+            if(stop) {
+                clearInterval(element.timerId);
+                if(fn){
+                    fn();
+                }
+            }
+        },30);
+    }
+
+
+    //获取计算后的样式的值
+    function getStyle(element, attr) {
+        //能力检测
+        if(window.getComputedStyle) {
+            return window.getComputedStyle(element, null)[attr];
+        }else{
+            return element.currentStyle[attr];
+        }
+    }
+
+
+</script></body></html>

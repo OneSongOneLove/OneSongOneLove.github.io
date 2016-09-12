@@ -1,0 +1,145 @@
+<!DOCTYPE html><html lang=en><head><meta charset=UTF-8><title>Title</title><style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        ul {
+            list-style: none;
+        }
+        ul li {
+            float: left;
+        }
+        .slidebox {
+            margin: 100px auto;
+            width: 600px;
+            height: 400px;
+            position: relative;
+        }
+        
+        .slidebox .hd {
+            position: absolute;
+            left: 50%;
+            bottom: 5%;
+            z-index: 10;
+            margin-left: -50px;
+        }
+        .slidebox .hd ul li {
+            width: 20px;
+            height: 20px;
+            background-color: #fff;
+            border-radius: 50%;
+            margin-left: 10px;
+            text-align: center;
+        }
+        .slidebox .bd {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            overflow: hidden;
+        }
+        .slidebox .bd ul {
+            width: 10000px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        #arr {
+            display: none;
+            /*display: block;*/
+        }
+
+        #arr span {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            margin-top: -20px;
+            background: #000;
+            cursor: pointer;
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+            font-family: '黑体';
+            font-size: 30px;
+            color: #fff;
+            opacity: 0.3;
+            border: 1px solid #fff;
+        }
+
+        #arr #right {
+            right: 5px;
+            left: auto;
+        }
+    </style></head><body><div class=slidebox><div class=hd><ul><li>1</li><li>2</li><li>3</li><li>4</li></ul></div><div class=bd><ul><li><img src=images/z10.jpg width=600 height=400></li><li><img src=images/z11.jpg width=600 height=400></li><li><img src=images/z12.jpg width=600 height=400></li><li><img src=images/z13.jpg width=600 height=400></li></ul></div><div id=arr><span id=left>&lt;</span><span id=right>&gt;</span></div></div></body><script src=js/jquery-1.7.1.js></script><script>
+    //轮播图
+    var imgWidth = $(".bd").width();
+    var index = 0;
+    var timer = null;
+    var flag = true;
+
+    // 自动轮播
+    function autoGo(boolean){
+        clearInterval(timer);
+        if(boolean){
+            timer = setInterval(go,3000);
+        }
+    }
+    autoGo(flag);
+    function go(){
+        index++;
+        selectPic(index);
+    }
+    var $ul = $(".bd > ul");
+    // 克隆最后一张图片
+    $ul.find("li").eq(0).clone(true).appendTo($ul);
+    function selectPic(num){
+        $ul.animate({
+            left: -num * imgWidth,
+        }, 300, function () {
+            //检查是否到最后一张
+            if (index == $ul.children().length - 1) {
+                $ul.css("left", "0px");
+                index = 0;
+            }
+        })
+    }
+    // 设置一个值来接收点击点的index
+    var numindex = 0;
+    $(".hd > ul li").on("click",function(){
+        // 获取当前点击的index
+        numindex = $(".hd > ul li").index(this);
+        // 调用上面的selectPic图片切换的方法
+        selectPic(numindex);
+    })
+
+    //左右箭头点击实现轮播
+    $("#left").on("click",function(){
+        if(numindex == 0){
+            numindex = $ul.children().length - 1;
+            $ul.css("left", - numindex * imgWidth);
+        }
+        numindex--;
+        selectPic(numindex);
+    });
+    $("#right").on("click",function(){
+        if(numindex >= $ul.children().length - 1){
+            $ul.css("left", "0px");
+            numindex = 0;
+        }
+        numindex++;
+        selectPic(numindex);
+    });
+
+
+    // 放鼠标进去到轮播图范围停止轮播，当离开时，开始继续轮播
+    $(".slidebox").on("mouseenter",function(){
+        $("#arr").css("display","block");
+        clearInterval(timer);
+    }).on("mouseleave",function(){
+        $("#arr").css("display","none");
+        timer = setInterval(go,3000);
+    })
+
+
+</script></html>
